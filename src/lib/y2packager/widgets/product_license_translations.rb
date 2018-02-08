@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Copyright (c) 2017 SUSE LLC, All Rights Reserved.
+# Copyright (c) 2018 SUSE LLC, All Rights Reserved.
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of version 2 of the GNU General Public License as published by the
@@ -12,45 +12,41 @@
 
 require "yast"
 require "cwm"
-require "cwm/dialog"
-
-require "y2packager/widgets/product_license_translations"
-
-require "cgi/util"
-Yast.import "Language"
-Yast.import "UI"
+require "y2packager/widgets/product_license"
+require "y2packager/widgets/language_selection"
 
 module Y2Packager
-  module Dialogs
-    # Dialog which shows the user a license and ask for confirmation
-    class InstProductLicense < CWM::Dialog
-      # @return [Y2Packager::Product] Product
+  module Widgets
+    class ProductLicenseTranslations < CWM::CustomWidget
       attr_reader :product
       attr_reader :language
-
-      # Constructor
-      #
-      # @param product [Y2Packager::Product] Product to ask for the license
       def initialize(product)
         super()
         @product = product
-        @language = Yast::Language.language
+        self.handle_all_events
       end
 
-      # Returns the dialog title
-      #
-      # @return [String] Dialog's title
-      def title
-        format(_("%s License Agreement"), product.label)
-      end
-
-      # Dialog content
-      #
-      # @return [Yast::Term] Dialog's content
       def contents
         VBox(
-          Y2Packager::Widgets::ProductLicenseTranslations.new(product)
+          language_selection,
+          VSpacing(0.5),
+          product_license
         )
+      end
+
+      def handle(event)
+        byebug
+        nil
+      end
+
+      def language_selection
+        @language_selection ||=
+          Y2Packager::Widgets::LanguageSelection.new(languages: ["es_ES", "en_US", "de_DE"])
+      end
+
+      def product_license
+        @product_license ||=
+          Y2Packager::Widgets::ProductLicense.new(product, skip_validation: false)
       end
     end
   end

@@ -32,7 +32,9 @@ module Y2Packager
       def main
         textdomain "installation"
         return :auto unless multi_product_media? && available_license?
-        Y2Packager::Dialogs::InstProductLicense.new(product).run
+        ret = Y2Packager::Dialogs::InstProductLicense.new(product).run
+        log.info "ret=#{ret}"
+        ret
       end
 
     private

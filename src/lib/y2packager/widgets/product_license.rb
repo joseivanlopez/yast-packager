@@ -13,6 +13,7 @@
 require "yast"
 require "cwm"
 require "y2packager/widgets/product_license_confirmation"
+require "y2packager/widgets/license_translations_button"
 
 module Y2Packager
   module Widgets
@@ -99,8 +100,10 @@ module Y2Packager
 
         VBox(
           VSpacing(0.5),
-          Left(
-            ProductLicenseConfirmation.new(product, skip_validation: skip_validation)
+          HBox(
+            ProductLicenseConfirmation.new(product, skip_validation: skip_validation),
+            HStretch(),
+            LicenseTranslationsButton.new(product)
           )
         )
       end
